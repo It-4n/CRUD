@@ -22,8 +22,8 @@ const User = database.define('users', {
     }
 });
 
-(async () => {
-    await User.sync();
-});
+// (async () => {
+//     await User.sync();
+// });
 
 module.exports = User;

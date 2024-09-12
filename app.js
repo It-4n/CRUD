@@ -56,9 +56,7 @@ app.post('/addBook', (req, res) => {
 });
 
 app.get('/editBook/:id', (req, res) => {
-    const id = req.params.id;
-
-    BookAdd.findByPk(id)
+    BookAdd.findByPk(req.params.id)
     .then(book => {
         if (book) {
             res.render('editBook', { book: book });
@@ -73,16 +71,19 @@ app.get('/editBook/:id', (req, res) => {
 });
 
 app.post('/editBook/:id', (req, res) => {
+    const id = req.params.id
+
     BookAdd.update({
         name: req.body.newBookName,
         author: req.body.newBookAuthor,
         genre: req.body.newBookGenre
-    }, { where: { id: req.params.id } })
+    }, { where: { id: id } })
     .then(() => {
         res.redirect('/addBook');
     })
     .catch(error => {
         console.error('Error editing book: ', error);
+        console.log(error);
         res.send('Error editing book: ' + error.message);
     });
 });

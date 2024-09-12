@@ -22,8 +22,8 @@ const BookAdd = database.define('books', {
     }
 });
 
-(async () => {
-    await BookAdd.sync();
-});
+// (async () => {
+//     await BookAdd.sync();
+// });
 
 module.exports = BookAdd;
