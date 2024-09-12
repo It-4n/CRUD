@@ -1,0 +1,32 @@
+<form method="post" action="/addBook">
+    <input type="text" name="bookName" id="bookName">
+    <input type="text" name="bookAuthor" id="bookAuthor">
+    <input type="text" name="bookGenre" id="bookGenre">
+    <button type="submit">Add book</button>
+</form>
+
+{{!-- <table>
+        <tr>
+            <th>Book Name:</th>
+            <td>teste</td>
+        </tr>
+</table> --}}
+
+{{#each books}}
+    <table>
+        <tr>
+            <th>Book Name:</th>
+            <td>{{name}}</td>
+        </tr>
+
+        <tr>
+            <th>Book Author:</th>
+            <td>{{author}}</td>
+        </tr>
+
+        <tr>
+            <th>Book Genre:</th>
+            <td>{{genre}}</td>
+        </tr>
+    </table>
+{{/each}}
