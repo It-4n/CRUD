@@ -7,7 +7,6 @@ const passport = require('passport');
 const { engine } = require('express-handlebars');
 const app = express();
 
-
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 app.use(express.static('./public'));
@@ -30,12 +29,18 @@ app.get('/login', (req, res) => {
     res.render('login');
 });
 
-// app.get('/addBook', (req, res) => {
-//     res.render('addBook');
-// });
+app.get('/addBook', (req, res) => {
+    BookAdd.findAll()
+    .then(books => {
+        res.render('addBook', { books: books });
+    })
+    .catch(err => {
+        console.error('Error listing added books: ', err);
+        res.render('addBook', { error: 'Error listing added books: ' + err.message });
+    });
+});
 
 app.post('/addBook', (req, res) => {
-   
     BookAdd.create({
         name: req.body.bookName,
         author: req.body.bookAuthor,
@@ -50,16 +55,19 @@ app.post('/addBook', (req, res) => {
     });
 });
 
-app.get('/addBook', (req, res) => {
-    BookAdd.findAll()
+app.get('/:id', (req, res) => {
+    BookAdd.findByPk(req.params.id)
     .then(books => {
-        res.render('addBook', { books: books });
+        if(books) {
+            res.render('edit', { books: books });
+        } else {
+            res.send('Book not found');
+        }
     })
-    .catch(err => {
-        console.error('Error listing added books: ', err);
-        res.render('addBook', { error: 'Error listing added books: ' + err.message });
-    });
- 
+    .catch(error => {
+        console.error('Error finding book: ', error);
+        res.send ('Error finding book: ' + error.message);
+    })
 });
 
 app.listen(4444, () => {
