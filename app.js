@@ -13,7 +13,7 @@ app.use(express.static('./public'));
 
 app.set('view engine', 'handlebars');
 app.set('views', './views');
-app.engine('handlebars', engine ({
+app.engine('handlebars', engine({
     defaultLayout: 'main',
     runtimeOptions: {
         allowProtoPropertiesByDefault: true,
@@ -46,48 +46,48 @@ app.post('/addBook', (req, res) => {
         author: req.body.bookAuthor,
         genre: req.body.bookGenre
     })
-    .then(books => {
+    .then(() => {
         res.redirect('/addBook');
     })
     .catch(err => {
         console.error('Error adding book: ', err);
-        res.render('addBook', { error: 'error adding book: ' + err.message });
+        res.render('addBook', { error: 'Error adding book: ' + err.message });
     });
 });
 
-app.get('/addBook/:id', (req, res) => {
+app.get('/editBook/:id', (req, res) => {
     const id = req.params.id;
 
     BookAdd.findByPk(id)
-    .then(books => {
-        if(books) {
-            res.render('addBook', { books: books });
+    .then(book => {
+        if (book) {
+            res.render('editBook', { book: book });
         } else {
             res.send('Book not found');
         }
     })
     .catch(error => {
         console.error('Error finding book: ', error);
-        res.send ('Error finding book: ' + error.message);
-    })
+        res.send('Error finding book: ' + error.message);
+    });
 });
 
-// app.post('/addBook/:id', (req, res) => {
-//     BookAdd.update({
-//         name: req.body.bookName,
-//         author: req.body.bookAuthor,
-//         genre: req.body.bookGenre 
-//     }, { where: { id: req.params.id } })
-//     .then(() => {
-//         res.redirect('/addBook');
-//     })
-//     .catch(error => {
-//         console.error('Error editing book: ', error);
-//         res.send('Error editing book: ' + error.message);
-//     });
-// });
+app.post('/editBook/:id', (req, res) => {
+    BookAdd.update({
+        name: req.body.newBookName,
+        author: req.body.newBookAuthor,
+        genre: req.body.newBookGenre
+    }, { where: { id: req.params.id } })
+    .then(() => {
+        res.redirect('/addBook');
+    })
+    .catch(error => {
+        console.error('Error editing book: ', error);
+        res.send('Error editing book: ' + error.message);
+    });
+});
 
-app.post('/addBook/:id', (req,res) => {
+app.get('/addBook/:id', (req, res) => {
     BookAdd.destroy({ where: { id: req.params.id } })
     .then(() => {
         res.redirect('/addBook');
