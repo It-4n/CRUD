@@ -61,7 +61,7 @@ app.get('/addBook/:id', (req, res) => {
     BookAdd.findByPk(id)
     .then(books => {
         if(books) {
-            res.render('edit', { books: books });
+            res.render('addBook', { books: books });
         } else {
             res.send('Book not found');
         }
@@ -72,28 +72,29 @@ app.get('/addBook/:id', (req, res) => {
     })
 });
 
-app.post('addBook/:id', (req, res) => {
-    BookAdd.update({
-        name: req.body.bookName,
-        author: req.body.bookAuthor,
-        genre: req.body.bookGenre 
-    }, { where: { id: id } })
+// app.post('/addBook/:id', (req, res) => {
+//     BookAdd.update({
+//         name: req.body.bookName,
+//         author: req.body.bookAuthor,
+//         genre: req.body.bookGenre 
+//     }, { where: { id: req.params.id } })
+//     .then(() => {
+//         res.redirect('/addBook');
+//     })
+//     .catch(error => {
+//         console.error('Error editing book: ', error);
+//         res.send('Error editing book: ' + error.message);
+//     });
+// });
+
+app.post('/addBook/:id', (req,res) => {
+    BookAdd.destroy({ where: { id: req.params.id } })
     .then(() => {
         res.redirect('/addBook');
     })
     .catch(error => {
-        console.error('Error editing book: ', error);
-        res.send('Error editing book: ' + error.message);
-    });
-});
-
-app.post('addBook/:id', (req,res) => {
-
-    BookAdd.destroy({
-        where: { id: id }
-    })
-    .then(() => {
-        res.redirect('/addBook')
+        console.error('Error deleting book: ', error);
+        res.send('Error deleting book: ' + error.message);
     });
 });
 
