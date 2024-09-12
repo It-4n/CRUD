@@ -55,8 +55,10 @@ app.post('/addBook', (req, res) => {
     });
 });
 
-app.get('/:id', (req, res) => {
-    BookAdd.findByPk(req.params.id)
+app.get('/addBook/:id', (req, res) => {
+    const id = req.params.id;
+
+    BookAdd.findByPk(id)
     .then(books => {
         if(books) {
             res.render('edit', { books: books });
@@ -68,6 +70,31 @@ app.get('/:id', (req, res) => {
         console.error('Error finding book: ', error);
         res.send ('Error finding book: ' + error.message);
     })
+});
+
+app.post('addBook/:id', (req, res) => {
+    BookAdd.update({
+        name: req.body.bookName,
+        author: req.body.bookAuthor,
+        genre: req.body.bookGenre 
+    }, { where: { id: id } })
+    .then(() => {
+        res.redirect('/addBook');
+    })
+    .catch(error => {
+        console.error('Error editing book: ', error);
+        res.send('Error editing book: ' + error.message);
+    });
+});
+
+app.post('addBook/:id', (req,res) => {
+
+    BookAdd.destroy({
+        where: { id: id }
+    })
+    .then(() => {
+        res.redirect('/addBook')
+    });
 });
 
 app.listen(4444, () => {
