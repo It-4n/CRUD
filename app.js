@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const bp = require('body-parser');
 const BookAdd = require('./models/bookAdd');
+const User = require('./models/user');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { engine } = require('express-handlebars');
@@ -101,6 +102,19 @@ app.get('/addBook/:id', (req, res) => {
         console.error('Error deleting book: ', error);
         res.send('Error deleting book: ' + error.message);
     });
+});
+
+app.post('/userRegister', async (req, res) => {
+    const { name, email, phone, password } = req.body;
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await User.create({ name, email, phone, password: hashedPassword });
+        res.redirect('/userLogin');
+    } catch (error) {
+        console.error('Error registering user: ', error);
+        res.render('userRegister', { error: 'Error registering user: ' + error.message});
+    }
 });
 
 app.listen(4444, () => {
