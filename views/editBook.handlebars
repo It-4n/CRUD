@@ -1,6 +1,6 @@
-<form action="/editBook/{{book.id}}" method="post">
-    <input type="text" name="newBookName" id="newBookName" value="{{book.name}}">
-    <input type="text" name="newBookAuthor" id="newBookAuthor" value="{{book.author}}">
-    <input type="text" name="newBookGenre" id="newBookGenre" value="{{book.genre}}">
+<form action="/editBook/{{books.id}}" method="post">
+    <input type="text" name="newBookName" id="newBookName" value="{{books.name}}">
+    <input type="text" name="newBookAuthor" id="newBookAuthor" value="{{books.author}}">
+    <input type="text" name="newBookGenre" id="newBookGenre" value="{{books.genre}}">
     <button type="submit">Update</button>
 </form>

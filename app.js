@@ -57,9 +57,9 @@ app.post('/addBook', (req, res) => {
 
 app.get('/editBook/:id', (req, res) => {
     BookAdd.findByPk(req.params.id)
-    .then(book => {
-        if (book) {
-            res.render('editBook', { book: book });
+    .then(books => {
+        if (books) {
+            res.render('editBook', { books: books });
         } else {
             res.send('Book not found');
         }
