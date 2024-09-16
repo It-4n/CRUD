@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const flash = require('express-flash');
 const bp = require('body-parser');
 const BookAdd = require('./models/bookAdd');
 const User = require('./models/user');
@@ -9,17 +10,18 @@ const initializePassport = require('./passport-config')
 const { engine } = require('express-handlebars');
 const app = express();
 
-app.use(bp.urlencoded({ extended: false }));
-app.use(bp.json());
-app.use(express.static('./public'));
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(session ({
     secret: 'secret',
     resave: false,
     saveUninitialized: false
 }));
+
+app.use(bp.urlencoded({ extended: false }));
+app.use(bp.json());
+app.use(express.static('./public'));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 initializePassport(passport,
     email => User.find(user => user.email === email),
@@ -40,13 +42,32 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-app.get('/userLogin', (req, res) => {
-    res.render('userLogin');
+app.get('/user-register', (req,res) => {
+    res.render('user-register');
 });
 
-app.get('/userRegister', (req,res) => {
-    res.render('userRegister');
+app.get('/user-login', (req, res) => {
+    res.render('user-login');
 });
+
+app.post('/user-register', async (req, res) => {
+    const { name, email, phone, password } = req.body;
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await User.create({ name, email, phone, password: hashedPassword });
+        res.redirect('/user-login');
+    } catch (error) {
+        console.error('Error registering user: ', error);
+        res.render('user-register', { error: 'Error registering user: ' + error.message});
+    }
+});
+
+app.post('/user-login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/user-login',
+    failureFlash: false
+}));
 
 app.get('/addBook', (req, res) => {
     BookAdd.findAll()
@@ -118,50 +139,38 @@ app.get('/addBook/:id', (req, res) => {
     });
 });
 
-app.post('/userRegister', async (req, res) => {
-    const { name, email, phone, password } = req.body;
+// app.post('/userLogin', (req, res, next) => {
+//     passport.authenticate('local', (err, user, info) => {
+//         if (err) {
+//             return next (err);
+//         };
 
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await User.create({ name, email, phone, password: hashedPassword });
-        res.redirect('/userLogin');
-    } catch (error) {
-        console.error('Error registering user: ', error);
-        res.render('userRegister', { error: 'Error registering user: ' + error.message});
-    }
-});
+//         if(!user) {
+//             return res.render('userLogin', { error: info.message });
+//         };
 
-app.post('/userLogin', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) {
-            return next (err);
-        };
+//         req.logIn(user, (err) => {
+//             if (err) {
+//                 return next(err);
+//             }
 
-        if(!user) {
-            return res.render('userLogin', { error: info.message });
-        };
+//             return res.redirect('/');  
+//         });
+//     })(req, res, next);
+// });
 
-        req.logIn(user, (err) => {
-            if (err) {
-                return next(err);
-            }
+// function ensureAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
 
-            return res.redirect('/');  
-        });
-    })(req, res, next);
-});
+//     res.redirect('/userLogin');
+// };
 
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
+// app.get('/protected', ensureAuthenticated, (req, res) => {
+//     res.send('This is a protected route!');
+// });
 
-    res.redirect('/userLogin');
-};
-
-app.get('/protected', ensureAuthenticated, (req, res) => {
-    res.send('This is a protected route!');
-});
 
 app.listen(4444, () => {
     console.log("Servidor rodando em: http://localhost:4444");
