@@ -5,12 +5,26 @@ const BookAdd = require('./models/bookAdd');
 const User = require('./models/user');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+const initializePassport = require('./passport-config')
 const { engine } = require('express-handlebars');
 const app = express();
 
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 app.use(express.static('./public'));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(session ({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false
+}));
+
+initializePassport(passport,
+    email => User.find(user => user.email === email),
+    id => User.find(user => user.id === id)
+);
 
 app.set('view engine', 'handlebars');
 app.set('views', './views');
@@ -115,6 +129,38 @@ app.post('/userRegister', async (req, res) => {
         console.error('Error registering user: ', error);
         res.render('userRegister', { error: 'Error registering user: ' + error.message});
     }
+});
+
+app.post('/userLogin', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next (err);
+        };
+
+        if(!user) {
+            return res.render('userLogin', { error: info.message });
+        };
+
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+
+            return res.redirect('/');  
+        });
+    })(req, res, next);
+});
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    res.redirect('/userLogin');
+};
+
+app.get('/protected', ensureAuthenticated, (req, res) => {
+    res.send('This is a protected route!');
 });
 
 app.listen(4444, () => {
