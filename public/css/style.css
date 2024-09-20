@@ -20,5 +20,14 @@ body {
 }
 
 .nav-menu ul li a {
+    font-family: 'Roboto', Helvetica, sans-serif;
     padding: 5px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: black;
 }
+
+.nav-menu ul li a:hover {
+    transition: .2s ease-in-out;
+    color: rgba(0, 0, 0, 0.699);
+} 
