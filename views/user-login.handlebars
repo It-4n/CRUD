@@ -1,9 +1,17 @@
 <h1>Login</h1>
 
-<form action="/user-login" method="post">
-    <input type="text" name="loginEmail" id="loginEmail">
-    <input type="password" name="loginPassword" id="loginPassword">
+<section class="login-form">
+  <form action="/user-login" method="post">
+    <label for="loginEmail">E-mail</label>
+    <br>
+    <input type="text" name="loginEmail" id="loginEmail" />
+    <br>
+    <label for="loginPassword">Password</label>
+    <br>
+    <input type="password" name="loginPassword" id="loginPassword" />
+    <br>
     <button type="submit">Login</button>
-</form>
+  </form>
+</section>
 
 <p>Not yet registered? <a href="/user-register">Join us now</a>!</p>
