@@ -11,7 +11,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "express-flash": "^0.0.2",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.0",
@@ -30,5 +30,16 @@
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0"
   },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/It-4n/CRUD.git"
+  },
+  "bugs": {
+    "url": "https://github.com/It-4n/CRUD/issues"
+  },
+  "homepage": "https://github.com/It-4n/CRUD#readme",
   "description": ""
 }

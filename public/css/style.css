@@ -5,22 +5,24 @@ body {
 }
 
 /* Main */
-.nav-menu {
+
+/* Nav */
+.main-menu {
     display: flex;
     justify-content: center;
 }
 
-.nav-menu ul {
+.main-menu ul {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-.nav-menu ul li{
+.main-menu ul li{
     list-style-type: none;
 }
 
-.nav-menu ul li a {
+.main-menu ul li a {
     font-family: 'Roboto', Helvetica, sans-serif;
     padding: 5px;
     text-decoration: none;
@@ -28,12 +30,30 @@ body {
     color: black;
 }
 
-.nav-menu ul li a:hover {
+.main-menu ul li a:hover {
     transition: .2s ease-in-out;
     color: rgba(0, 0, 0, 0.699);
-} 
+}
+ 
+.nav-submenu li a button {
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+/* Home */
+
+.banner {
+    display: flex;
+    justify-content: center;
+}
+
+.banner img {
+    width: 100%;
+}
 
 /* Login */
+
+/* Form */
 .login-form {
     display: flex;
     justify-content: center;
